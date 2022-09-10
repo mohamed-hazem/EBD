@@ -32,6 +32,8 @@ quality_choose = {"1080p": "1", "720p": "2", "480p": "3", "360p": "4", "240p": "
 current_directory = path.dirname(__file__)
 screen_width, screen_height = size()
 
+DL_DELAY = 3
+SCRAP_DELAY = 2
 # ---------------------------------------------------------------------------------------- #
 
 chdir(current_directory) # Change current working directory
@@ -114,6 +116,7 @@ class MainBot:
         self.browser = Chrome(service=service, options=options, desired_capabilities=caps)
         self.browser.maximize_window()
         self.browser.implicitly_wait(10)
+        self.switch_to(0)
 
     
     def main_step(self):
@@ -125,6 +128,7 @@ class MainBot:
 
         self.name = self.browser.find_element(By.CLASS_NAME, 'movie_title').get_attribute("innerText").title()
 
+        if (self.IDM): sleep(1.5)
         self.close_ads()
 
     def series_step(self, season, episode, get_link=False):
@@ -170,7 +174,8 @@ class MainBot:
                     seasons.reverse()
     
     def download(self, get_link=False):
-        sleep(2)
+        delay = SCRAP_DELAY if (get_link) else DL_DELAY 
+        sleep(delay)
 
         if get_link:
             size_span = self.browser.find_element(By.XPATH, f'//*[@id="watch_dl"]/table/tbody/tr[{self.quality}]/td[3]').get_attribute("innerText")
